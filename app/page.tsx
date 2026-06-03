@@ -3,6 +3,7 @@ import AppShell from "../components/layout/AppShell";
 import PlotTable from "../components/priceBreakdown/PlotTable";
 import PriceBreakdown from "../components/priceBreakdown/PriceBreakdown";
 import PriceConfig from "../components/priceconfig/PriceConfig";
+import PriceSetValues from "../components/priceconfig/PriceSetValues";
 import PriceSummary, { summaryRows } from "../components/priceconfig/PriceSummary";
 
 export default function Home() {
@@ -45,7 +46,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="min-w-0 xl:pt-0">
+        <div className="min-w-0 space-y-4 xl:space-y-6 xl:pt-0">
+          <Card
+            eyebrow="Price Set Values"
+            title="Current Selection"
+            className="bg-white/90"
+          >
+            <PriceSetValues />
+          </Card>
           <PriceBreakdown />
         </div>
       </div>
