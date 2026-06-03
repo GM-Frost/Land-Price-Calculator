@@ -75,6 +75,12 @@ export const LAND_UNITS = {
     squareFeet: 10.76391041671,
     squareMeter: 1,
   },
+  SQUARE_YARD: {
+  label: 'Square Yard',
+  system: 'BASE',
+  squareFeet: 9,
+  squareMeter: 0.83612736,
+}
 } as const;
 
 export const LAND_HIERARCHY = {
@@ -101,6 +107,7 @@ export const LAND_HIERARCHY = {
   KATTHA: {
     DHUR: 20,
   },
+
 };
 
 export type LandUnitKey = keyof typeof LAND_UNITS;

@@ -28,7 +28,7 @@ export default function Card({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[28px] border border-black/5 bg-white/90 shadow-[0_20px_60px_-24px_rgba(15,23,42,0.22)] backdrop-blur",
+        "overflow-hidden rounded-[28px] border border-black/5 shadow-[0_20px_60px_-24px_rgba(15,23,42,0.22)] backdrop-blur",
         className
       )}
     >
