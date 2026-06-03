@@ -1,4 +1,7 @@
-import { LAND_UNITS } from "../utils/LandCalculation";
+"use client";
+
+import { LAND_UNITS, type LandUnitKey } from "../utils/LandCalculation";
+import { useWorkspace } from "./WorkspaceProvider";
 
 const hillUnits = Object.entries(LAND_UNITS).filter(([, unit]) => unit.system === "HILL");
 const teraiUnits = Object.entries(LAND_UNITS).filter(([, unit]) => unit.system === "TERAI");
@@ -24,7 +27,13 @@ const sidebarGroups = [
   },
 ];
 
+function cn(...values: Array<string | false | null | undefined>) {
+  return values.filter(Boolean).join(" ");
+}
+
 export default function Sidebar() {
+  const { selectedUnitKey, setSelectedUnitKey } = useWorkspace();
+
   return (
     <aside className="min-w-0 w-full xl:max-w-[260px] xl:shrink-0">
       <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,0.3)] xl:sticky xl:top-28">
@@ -42,18 +51,33 @@ export default function Sidebar() {
               </p>
 
               <div className="grid gap-1 sm:grid-cols-2 xl:grid-cols-1">
-                {group.items.map(([, unit]) => (
-                  <a
-                    key={unit.label}
-                    href="#"
-                    className="flex min-w-0 items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
-                  >
-                    <span className="truncate">{unit.label}</span>
-                    <span className="shrink-0 text-xs text-slate-400">
-                      {unit.squareFeet.toFixed(2)} sq.ft
-                    </span>
-                  </a>
-                ))}
+                {group.items.map(([unitKey, unit]) => {
+                  const isActive = selectedUnitKey === unitKey;
+
+                  return (
+                    <button
+                      key={unit.label}
+                      type="button"
+                      onClick={() => setSelectedUnitKey(unitKey as LandUnitKey)}
+                      className={cn(
+                        "flex min-w-0 items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition-colors",
+                        isActive
+                          ? "bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200"
+                          : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-800"
+                      )}
+                    >
+                      <span className="truncate">{unit.label}</span>
+                      <span
+                        className={cn(
+                          "shrink-0 text-xs",
+                          isActive ? "text-emerald-700" : "text-slate-400"
+                        )}
+                      >
+                        {unit.squareFeet.toFixed(2)} sq.ft
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </section>
           ))}
