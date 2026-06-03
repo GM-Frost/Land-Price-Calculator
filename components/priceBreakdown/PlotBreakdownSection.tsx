@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 import Button from "../button/Button";
@@ -116,9 +117,21 @@ export default function PlotBreakdownSection() {
         <PlotTable rows={plotRows} onDeleteRow={handleDeleteRow} />
       </Card>
 
+      <AnimatePresence>
       {isModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
-          <div className="w-full max-w-2xl rounded-[28px] border border-slate-200 bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.45)]">
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="w-full max-w-2xl rounded-[28px] border border-slate-200 bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.45)]"
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700">
@@ -235,9 +248,10 @@ export default function PlotBreakdownSection() {
                 Add Plot
               </Button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       ) : null}
+      </AnimatePresence>
     </>
   );
 }

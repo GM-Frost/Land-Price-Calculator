@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { LAND_UNITS, type LandUnitKey } from "../utils/LandCalculation";
 import { useWorkspace } from "./WorkspaceProvider";
 
@@ -33,10 +34,16 @@ function cn(...values: Array<string | false | null | undefined>) {
 
 export default function Sidebar() {
   const { selectedUnitKey, setSelectedUnitKey } = useWorkspace();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <aside className="min-w-0 w-full xl:max-w-[260px] xl:shrink-0">
-      <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,0.3)] xl:sticky xl:top-28">
+      <motion.div
+        className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,0.3)] xl:sticky xl:top-28"
+        initial={prefersReducedMotion ? undefined : { opacity: 0, x: -18 }}
+        animate={prefersReducedMotion ? undefined : { opacity: 1, x: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+      >
         <div className="mb-4 rounded-2xl bg-slate-950 px-4 py-4 text-white">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
             Land Units
@@ -55,7 +62,7 @@ export default function Sidebar() {
                   const isActive = selectedUnitKey === unitKey;
 
                   return (
-                    <button
+                    <motion.button
                       key={unit.label}
                       type="button"
                       onClick={() => setSelectedUnitKey(unitKey as LandUnitKey)}
@@ -65,6 +72,9 @@ export default function Sidebar() {
                           ? "bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200"
                           : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-800"
                       )}
+                      whileHover={prefersReducedMotion ? undefined : { x: 4 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.985 }}
+                      layout
                     >
                       <span className="truncate">{unit.label}</span>
                       <span
@@ -75,14 +85,14 @@ export default function Sidebar() {
                       >
                         {unit.squareFeet.toFixed(2)} sq.ft
                       </span>
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
             </section>
           ))}
         </div>
-      </div>
+      </motion.div>
     </aside>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 import Button from "../button/Button";
@@ -75,14 +76,20 @@ export default function PriceSetValues() {
         </Button>
       </div>
 
-      <div className="space-y-2">
+      <motion.div layout className="space-y-2">
+        <AnimatePresence initial={false}>
         {savedPriceSets.map((item) => {
           const isEditing = editingId === item.id;
 
           return (
-            <div
+            <motion.div
               key={item.id}
               className="flex min-w-0 items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5"
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
             >
               <div className="min-w-0 flex-1">
                 {isEditing ? (
@@ -145,10 +152,11 @@ export default function PriceSetValues() {
                   </button>
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
