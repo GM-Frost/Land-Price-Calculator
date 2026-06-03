@@ -46,7 +46,7 @@ export default function Card({
               </h2>
             ) : null}
             {description ? (
-              <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+              <p className="max-w-2xl md:text-sm leading-5 text-slate-600 sm:text-xs">
                 {description}
               </p>
             ) : null}

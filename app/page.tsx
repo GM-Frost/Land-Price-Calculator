@@ -1,16 +1,25 @@
-import Button from "../components/button/Button";
 import Card from "../components/card/Card";
-import CardWithButton from "../components/card/CardWithButton";
-import { LAND_UNITS } from "../components/utils/LandCalculation";
-
+import AppShell from "../components/layout/AppShell";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#ecfdf5_42%,#f8fafc_100%)] text-slate-900">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
-
+    <AppShell>
+      <div className="space-y-6 grid md:grid-cols-[60%_40%] gap-3">
+        <Card
+          eyebrow="Calculator"
+          title="Price Set"
+          description="Set your land price and add plot to calculate the value of your land"
+        >
 asdf
+        </Card>
+         <Card
+          eyebrow="Calculator"
+          title="Price Set"
+          description="Set your land price and add plot to calculate the value of your land"
+        >
+asdf
+        </Card>
       </div>
-    </main>
+    </AppShell>
   );
 }
