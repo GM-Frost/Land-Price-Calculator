@@ -49,8 +49,18 @@ const rows = [
 
 export default function PlotTable() {
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+    <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto" }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          width: "100%",
+          maxWidth: "100%",
+          overflowX: "auto",
+          boxShadow: "none",
+          borderRadius: 3,
+        }}
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
             <StyledTableCell>Plot</StyledTableCell>
@@ -75,7 +85,8 @@ export default function PlotTable() {
             </StyledTableRow>
           ))}
         </TableBody>
-      </Table>
-    </TableContainer>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }

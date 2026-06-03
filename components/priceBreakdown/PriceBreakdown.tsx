@@ -1,17 +1,11 @@
-import React from 'react'
-import Card from '../card/Card'
-
+import Card from "../card/Card";
 
 const PriceBreakdown = () => {
   return (
-<Card
-          title="Plots"
-          className="relative bg-white/90 h-full"
-        >
+    <Card title="Plots" className="relative min-h-[260px] bg-white/90 xl:min-h-[920px]">
+      <div className="text-base text-slate-700">asdf</div>
+    </Card>
+  );
+};
 
-          asdf
-        </Card>
-  )
-}
-
-export default PriceBreakdown
+export default PriceBreakdown;

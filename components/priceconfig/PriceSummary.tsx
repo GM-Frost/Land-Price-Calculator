@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const summaryRows = [
   ['1 Ropani', '16 Aana', 'Hill System'],
   ['1 Aana', '4 Paisa', 'Hill System'],
@@ -21,8 +19,13 @@ const PriceSummary = ({ from, to, system }: PriceSummaryProps) => {
   return (
     <div className="flex h-full flex-col justify-center">
       <div className="flex flex-col items-center gap-2 text-sm">
+        {system ? (
+          <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+            {system}
+          </span>
+        ) : null}
         <span className="font-medium text-slate-600">{from}</span>
-       <div className="my-1 h-px w-16 bg-slate-200" />
+        <div className="my-1 h-px w-16 bg-slate-200" />
         <span className="font-bold text-emerald-700">{to}</span>
       </div>
     </div>

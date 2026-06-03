@@ -1,16 +1,9 @@
 import { LAND_UNITS } from "../utils/LandCalculation";
 
-
-const hillUnits = Object.entries(LAND_UNITS).filter(
-  ([_, unit]) => unit.system === 'HILL'
-);
-
-const teraiUnits = Object.entries(LAND_UNITS).filter(
-  ([_, unit]) => unit.system === 'TERAI'
-);
-
+const hillUnits = Object.entries(LAND_UNITS).filter(([, unit]) => unit.system === "HILL");
+const teraiUnits = Object.entries(LAND_UNITS).filter(([, unit]) => unit.system === "TERAI");
 const internationalUnits = Object.entries(LAND_UNITS).filter(
-  ([_, unit]) => unit.system === 'INTERNATIONAL'
+  ([, unit]) => unit.system === "INTERNATIONAL"
 );
 
 const sidebarGroups = [
@@ -33,34 +26,36 @@ const sidebarGroups = [
 
 export default function Sidebar() {
   return (
-    <aside className="hidden w-full max-w-65 shrink-0 lg:block">
-      <div className="sticky top-28 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,0.3)]">
+    <aside className="min-w-0 w-full xl:max-w-[260px] xl:shrink-0">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,0.3)] xl:sticky xl:top-28">
         <div className="mb-4 rounded-2xl bg-slate-950 px-4 py-4 text-white">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
             Land Units
           </p>
-
         </div>
 
         <div className="space-y-5">
           {sidebarGroups.map((group) => (
-            <div key={group.title}>
-              <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <section key={group.title} className="space-y-2">
+              <p className="px-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                 {group.label}
               </p>
-              <div className="space-y-1">
-                {group.items.map(([_key, unit]) => (
+
+              <div className="grid gap-1 sm:grid-cols-2 xl:grid-cols-1">
+                {group.items.map(([, unit]) => (
                   <a
                     key={unit.label}
                     href="#"
-                    className="flex justify-between rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
+                    className="flex min-w-0 items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
                   >
-                    <span>{unit.label}</span>
-                    <span className="text-slate-400 text-xs">{unit.squareFeet.toFixed(2)} sq.ft</span>
+                    <span className="truncate">{unit.label}</span>
+                    <span className="shrink-0 text-xs text-slate-400">
+                      {unit.squareFeet.toFixed(2)} sq.ft
+                    </span>
                   </a>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       </div>
