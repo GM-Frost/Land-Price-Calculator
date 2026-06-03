@@ -17,11 +17,24 @@ export type SavedPriceSet = {
   unitLabel: string;
 };
 
+export type PlotEntry = {
+  id: string;
+  plotNumber: number;
+  plotName: string;
+  plotDesc: string;
+  plotSize: number;
+  plotUnitKey: LandUnitKey;
+  plotUnit: string;
+  plotAmount: number;
+  priceSetLabel?: string;
+};
+
 type WorkspaceContextValue = {
   selectedUnitKey: LandUnitKey;
   selectedUnit: (typeof LAND_UNITS)[LandUnitKey];
   pricePerUnit: string;
   savedPriceSets: SavedPriceSet[];
+  plotRows: PlotEntry[];
   currentUnitAlreadySet: boolean;
   setSelectedUnitKey: (unitKey: LandUnitKey) => void;
   setPricePerUnit: (value: string) => void;
@@ -30,6 +43,9 @@ type WorkspaceContextValue = {
     unitKey: LandUnitKey,
     price: string
   ) => "saved" | "duplicate" | "empty";
+  updateSavedPriceSet: (id: string, price: string) => "updated" | "empty" | "missing";
+  addPlotRow: (plot: Omit<PlotEntry, "id" | "plotNumber">) => void;
+  removePlotRow: (id: string) => void;
   removeSavedPriceSet: (id: string) => void;
   clearSavedPriceSets: () => void;
 };
@@ -44,6 +60,7 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
   const [selectedUnitKey, setSelectedUnitKey] = useState<LandUnitKey>("AANA");
   const [pricePerUnit, setPricePerUnit] = useState("");
   const [savedPriceSets, setSavedPriceSets] = useState<SavedPriceSet[]>([]);
+  const [plotRows, setPlotRows] = useState<PlotEntry[]>([]);
   const currentUnitAlreadySet = savedPriceSets.some(
     (item) => item.unitKey === selectedUnitKey
   );
@@ -54,6 +71,7 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
       selectedUnit: LAND_UNITS[selectedUnitKey],
       pricePerUnit,
       savedPriceSets,
+      plotRows,
       currentUnitAlreadySet,
       setSelectedUnitKey,
       setPricePerUnit,
@@ -88,6 +106,44 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
 
         return "saved";
       },
+      updateSavedPriceSet: (id: string, price: string) => {
+        if (!price) return "empty";
+
+        let found = false;
+
+        setSavedPriceSets((current) =>
+          current.map((item) => {
+            if (item.id !== id) return item;
+            found = true;
+            return {
+              ...item,
+              price,
+            };
+          })
+        );
+
+        return found ? "updated" : "missing";
+      },
+      addPlotRow: (plot: Omit<PlotEntry, "id" | "plotNumber">) => {
+        setPlotRows((current) => [
+          ...current,
+          {
+            ...plot,
+            id: `plot-${Date.now()}-${current.length + 1}`,
+            plotNumber: current.length + 1,
+          },
+        ]);
+      },
+      removePlotRow: (id: string) => {
+        setPlotRows((current) =>
+          current
+            .filter((row) => row.id !== id)
+            .map((row, index) => ({
+              ...row,
+              plotNumber: index + 1,
+            }))
+        );
+      },
       removeSavedPriceSet: (id: string) => {
         setSavedPriceSets((current) => current.filter((item) => item.id !== id));
       },
@@ -95,7 +151,7 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
         setSavedPriceSets([]);
       },
     }),
-    [currentUnitAlreadySet, pricePerUnit, savedPriceSets, selectedUnitKey]
+    [currentUnitAlreadySet, plotRows, pricePerUnit, savedPriceSets, selectedUnitKey]
   );
 
   return (

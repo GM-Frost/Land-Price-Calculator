@@ -7,17 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
-export type PlotRow = {
-  id: string;
-  plotNumber: number;
-  plotName: string;
-  plotDesc: string;
-  plotSize: number;
-  plotUnit: string;
-  plotAmount: number;
-  priceSetLabel?: string;
-};
+import type { PlotEntry } from "../layout/WorkspaceProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -40,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 type PlotTableProps = {
-  rows: PlotRow[];
+  rows: PlotEntry[];
   onDeleteRow: (id: string) => void;
 };
 

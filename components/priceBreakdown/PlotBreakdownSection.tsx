@@ -5,9 +5,9 @@ import toast from "react-hot-toast";
 
 import Button from "../button/Button";
 import Card from "../card/Card";
-import { useWorkspace } from "../layout/WorkspaceProvider";
+import { type PlotEntry, useWorkspace } from "../layout/WorkspaceProvider";
 import { LAND_UNITS, type LandUnitKey } from "../utils/LandCalculation";
-import PlotTable, { type PlotRow } from "./PlotTable";
+import PlotTable from "./PlotTable";
 
 type PlotFormState = {
   plotName: string;
@@ -33,8 +33,14 @@ function sanitizeNumeric(value: string) {
 }
 
 export default function PlotBreakdownSection() {
-  const { savedPriceSets, selectedUnitKey, addPriceSetForUnit } = useWorkspace();
-  const [rows, setRows] = useState<PlotRow[]>([]);
+  const {
+    savedPriceSets,
+    selectedUnitKey,
+    addPriceSetForUnit,
+    plotRows,
+    addPlotRow,
+    removePlotRow,
+  } = useWorkspace();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState<PlotFormState>({
     ...initialFormState,
@@ -76,31 +82,23 @@ export default function PlotBreakdownSection() {
     const unitPrice = Number(resolvedUnitPrice.replace(/,/g, ""));
     const totalAmount = plotSize * unitPrice;
 
-    const nextRow: PlotRow = {
-      id: `plot-${Date.now()}`,
-      plotNumber: rows.length + 1,
+    const nextRow: Omit<PlotEntry, "id" | "plotNumber"> = {
       plotName: form.plotName.trim(),
       plotDesc: form.plotDesc.trim(),
       plotSize,
+      plotUnitKey: form.plotUnit,
       plotUnit: LAND_UNITS[form.plotUnit].label,
       plotAmount: totalAmount,
       priceSetLabel: `रु ${resolvedUnitPrice} / ${LAND_UNITS[form.plotUnit].label}`,
     };
 
-    setRows((current) => [...current, nextRow]);
+    addPlotRow(nextRow);
     setIsModalOpen(false);
     toast.success("Plot added");
   };
 
   const handleDeleteRow = (id: string) => {
-    setRows((current) =>
-      current
-        .filter((row) => row.id !== id)
-        .map((row, index) => ({
-          ...row,
-          plotNumber: index + 1,
-        }))
-    );
+    removePlotRow(id);
     toast.success("Plot removed");
   };
 
@@ -115,7 +113,7 @@ export default function PlotBreakdownSection() {
           </Button>
         }
       >
-        <PlotTable rows={rows} onDeleteRow={handleDeleteRow} />
+        <PlotTable rows={plotRows} onDeleteRow={handleDeleteRow} />
       </Card>
 
       {isModalOpen ? (
