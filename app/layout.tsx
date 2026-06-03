@@ -14,9 +14,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nepal Land Price Calculator",
+  title: "Land Price Calculator",
   description:
     "Responsive single-page land price calculator for Nepali and international land units.",
+  icons: {
+    icon: "/logo/logo.svg",
+    shortcut: "/logo/logo.svg",
+    apple: "/logo/logo.svg",
+  },
 };
 
 export default function RootLayout({
