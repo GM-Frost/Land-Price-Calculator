@@ -1,10 +1,11 @@
 import Card from "../components/card/Card";
 import AppShell from "../components/layout/AppShell";
-import PlotTable from "../components/priceBreakdown/PlotTable";
+import PlotBreakdownSection from "../components/priceBreakdown/PlotBreakdownSection";
 import PriceBreakdown from "../components/priceBreakdown/PriceBreakdown";
 import PriceConfig from "../components/priceconfig/PriceConfig";
 import PriceSetValues from "../components/priceconfig/PriceSetValues";
 import PriceSummary, { summaryRows } from "../components/priceconfig/PriceSummary";
+import UnitConversion from "../components/priceconfig/UnitConversion";
 
 export default function Home() {
   return (
@@ -20,9 +21,7 @@ export default function Home() {
             <PriceConfig />
           </Card>
 
-          <Card title="Plot Break Down" className="bg-white/90 xl:min-h-[620px]">
-            <PlotTable />
-          </Card>
+          <PlotBreakdownSection />
 
           <div className="grid min-w-0 gap-4 md:grid-cols-2 2xl:grid-cols-3">
             <Card eyebrow="Total Plots" className="min-h-[220px] bg-[#f7f7f7]" />
@@ -49,10 +48,12 @@ export default function Home() {
         <div className="min-w-0 space-y-4 xl:space-y-6 xl:pt-0">
           <Card
             eyebrow="Price Set Values"
-            title="Current Selection"
             className="bg-white/90"
           >
             <PriceSetValues />
+          </Card>
+          <Card eyebrow="Unit Conversion" className="bg-white/90">
+            <UnitConversion />
           </Card>
           <PriceBreakdown />
         </div>

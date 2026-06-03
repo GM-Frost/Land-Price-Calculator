@@ -26,6 +26,10 @@ type WorkspaceContextValue = {
   setSelectedUnitKey: (unitKey: LandUnitKey) => void;
   setPricePerUnit: (value: string) => void;
   saveCurrentPriceSet: () => "saved" | "duplicate" | "empty";
+  addPriceSetForUnit: (
+    unitKey: LandUnitKey,
+    price: string
+  ) => "saved" | "duplicate" | "empty";
   removeSavedPriceSet: (id: string) => void;
   clearSavedPriceSets: () => void;
 };
@@ -66,6 +70,22 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
           },
           ...current,
         ]);
+        return "saved";
+      },
+      addPriceSetForUnit: (unitKey: LandUnitKey, price: string) => {
+        if (!price) return "empty";
+        if (savedPriceSets.some((item) => item.unitKey === unitKey)) return "duplicate";
+
+        setSavedPriceSets((current) => [
+          {
+            id: `${unitKey}-${price}-${Date.now()}`,
+            price,
+            unitKey,
+            unitLabel: LAND_UNITS[unitKey].label,
+          },
+          ...current,
+        ]);
+
         return "saved";
       },
       removeSavedPriceSet: (id: string) => {

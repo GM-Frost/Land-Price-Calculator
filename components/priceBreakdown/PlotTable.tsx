@@ -8,6 +8,17 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+export type PlotRow = {
+  id: string;
+  plotNumber: number;
+  plotName: string;
+  plotDesc: string;
+  plotSize: number;
+  plotUnit: string;
+  plotAmount: number;
+  priceSetLabel?: string;
+};
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -28,26 +39,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  plotNumber: number,
-  plotName: string,
-  plotDesc: string,
-  plotSize: number,
-  plotUnit:string,
-  plotAmount: number,
-) {
-  return { plotNumber, plotName, plotDesc, plotSize, plotUnit, plotAmount };
-}
+type PlotTableProps = {
+  rows: PlotRow[];
+  onDeleteRow: (id: string) => void;
+};
 
-const rows = [
-  createData(1, 'Plot A', 'Description for Plot A', 16, 'Aana', 4.0),
-  createData(2, 'Plot B', 'Description for Plot B', 23, 'Dhur', 4.3),
-  createData(3, 'Plot C', 'Description for Plot C', 21, 'sq ft', 6.0),
-  createData(4, 'Plot D', 'Description for Plot D', 2, 'Ropani', 4.3),
-  createData(5, 'Plot E', 'Description for Plot E', 3, 'sq ft', 3.9),
-];
-
-export default function PlotTable() {
+export default function PlotTable({ rows, onDeleteRow }: PlotTableProps) {
   return (
     <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto" }}>
       <TableContainer
@@ -68,12 +65,21 @@ export default function PlotTable() {
             <StyledTableCell>Plot Description</StyledTableCell>
             <StyledTableCell align="right">Plot Size</StyledTableCell>
             <StyledTableCell align="right">Plot Unit</StyledTableCell>
+            <StyledTableCell>Price Set</StyledTableCell>
             <StyledTableCell align="right">Amount</StyledTableCell>
+            <StyledTableCell align="center">Action</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
+          {rows.length === 0 ? (
+            <StyledTableRow>
+              <StyledTableCell colSpan={8} align="center">
+                No plots added yet.
+              </StyledTableCell>
+            </StyledTableRow>
+          ) : null}
           {rows.map((row) => (
-            <StyledTableRow key={row.plotNumber}>
+            <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
                 {row.plotNumber}
               </StyledTableCell>
@@ -81,7 +87,18 @@ export default function PlotTable() {
               <StyledTableCell>{row.plotDesc}</StyledTableCell>
               <StyledTableCell align="right">{row.plotSize}</StyledTableCell>
               <StyledTableCell align="right">{row.plotUnit}</StyledTableCell>
+              <StyledTableCell>{row.priceSetLabel ?? "-"}</StyledTableCell>
               <StyledTableCell align="right">{row.plotAmount}</StyledTableCell>
+              <StyledTableCell align="center">
+                <button
+                  type="button"
+                  onClick={() => onDeleteRow(row.id)}
+                  aria-label={`Delete ${row.plotName}`}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full text-base font-medium text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-700"
+                >
+                  ×
+                </button>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
