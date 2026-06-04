@@ -14,7 +14,7 @@ export default function Header() {
           transition={{ duration: 0.2 }}
         >
           <Image
-            src="/logo/logo.svg"
+            src="/logo/Logo.svg"
             alt="Land Price Calculator"
             width={42}
             height={42}
@@ -38,8 +38,8 @@ export default function Header() {
           }}
         >
           <Image
-            src="/image/Flag_of_Nepal.gif"
-            alt="Land Price Calculator"
+            src="/Image/Flag_of_Nepal.gif"
+            alt="Flag of Nepal"
             width={20}
             height={20}
           />

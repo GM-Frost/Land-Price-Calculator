@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   description:
     "Responsive single-page land price calculator for Nepali and international land units.",
   icons: {
-    icon: "/logo/logo.svg",
-    shortcut: "/logo/logo.svg",
-    apple: "/logo/logo.svg",
+    icon: "/logo/Logo.svg",
+    shortcut: "/logo/Logo.svg",
+    apple: "/logo/Logo.svg",
   },
 };
 
