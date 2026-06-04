@@ -1,41 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-import { convertLandUnit, type LandUnitKey } from "../utils/LandCalculation";
-import { useWorkspace } from "../layout/WorkspaceProvider";
+import {
+  convertLandUnit,
+  type LandUnitKey,
+} from "../utils/LandCalculation";
 
-const conversionUnits: Array<{ key: LandUnitKey; label: string }> = [
-  { key: "ROPANI", label: "Ropani" },
-  { key: "AANA", label: "Aana" },
-  { key: "PAISA", label: "Paisa" },
-  { key: "DAAM", label: "Daam" },
-  { key: "BIGHA", label: "Bigha" },
-  { key: "KATTHA", label: "Kattha" },
-  { key: "DHUR", label: "Dhur" },
-  { key: "SQUARE_FEET", label: "Sq.Feet" },
-  { key: "SQUARE_METER", label: "Sq.Meter" },
-];
-
-const precisionByUnit: Partial<Record<LandUnitKey, number>> = {
-  ROPANI: 3,
-  AANA: 3,
-  PAISA: 3,
-  DAAM: 3,
-  BIGHA: 3,
-  KATTHA: 3,
-  DHUR: 3,
-  SQUARE_FEET: 2,
-  SQUARE_METER: 2,
+type ConversionUnit = {
+  key: LandUnitKey;
+  label: string;
+  decimals: number;
 };
 
-function formatForDisplay(value: number, unitKey: LandUnitKey) {
-  const precision = precisionByUnit[unitKey] ?? 2;
-  return value.toLocaleString("en-US", {
-    minimumFractionDigits: precision === 0 ? 0 : Math.min(2, precision),
-    maximumFractionDigits: precision,
-  });
-}
+const CONVERSION_UNITS: ConversionUnit[] = [
+  { key: "ROPANI", label: "Ropani", decimals: 3 },
+  { key: "AANA", label: "Aana", decimals: 2 },
+  { key: "PAISA", label: "Paisa", decimals: 2 },
+  { key: "DAAM", label: "Daam", decimals: 3 },
+  { key: "BIGHA", label: "Bigha", decimals: 2 },
+  { key: "KATTHA", label: "Kattha", decimals: 2 },
+  { key: "DHUR", label: "Dhur", decimals: 3 },
+  { key: "SQUARE_FEET", label: "Sq.Feet", decimals: 2 },
+  { key: "SQUARE_METER", label: "Sq.Meter", decimals: 2 },
+];
 
 function sanitizeNumericInput(value: string) {
   const cleaned = value.replace(/[^\d.]/g, "");
@@ -45,48 +33,74 @@ function sanitizeNumericInput(value: string) {
   return `${parts[0]}.${parts.slice(1).join("")}`;
 }
 
-export default function UnitConversion() {
-  const { selectedUnitKey, setSelectedUnitKey } = useWorkspace();
-  const [entryUnitKey, setEntryUnitKey] = useState<LandUnitKey>("ROPANI");
-  const [entryValue, setEntryValue] = useState("0");
+function formatValue(value: number, decimals: number) {
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    useGrouping: false,
+  });
+}
 
-  const numericValue = Number.parseFloat(entryValue);
-  const safeValue = Number.isFinite(numericValue) ? numericValue : 0;
+function ConversionField({
+  unit,
+  value,
+  onChange,
+}: {
+  unit: ConversionUnit;
+  value: string;
+  onChange: (nextValue: string) => void;
+}) {
+  return (
+    <label className="space-y-2">
+      <span className="block  font-semibold text-slate-950 sm:text-sm">
+        {unit.label}
+      </span>
+      <input
+        type="text"
+        inputMode="decimal"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-2 text-xs  text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-emerald-300 sm:h-16 sm:text-sm"
+      />
+    </label>
+  );
+}
+
+export default function UnitConversion() {
+  const [inputUnit, setInputUnit] = useState<LandUnitKey>("ROPANI");
+  const [inputValue, setInputValue] = useState("1");
+
+  const safeValue = useMemo(() => {
+    const parsed = Number.parseFloat(inputValue);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }, [inputValue]);
+
+  const formattedValues = useMemo(() => {
+    return Object.fromEntries(
+      CONVERSION_UNITS.map((unit) => {
+        const convertedValue =
+          unit.key === inputUnit
+            ? safeValue
+            : convertLandUnit(safeValue, inputUnit, unit.key);
+
+        return [unit.key, formatValue(convertedValue, unit.decimals)];
+      })
+    ) as Record<LandUnitKey, string>;
+  }, [inputUnit, safeValue]);
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
-      {conversionUnits.map((unit) => {
-        const isActive = selectedUnitKey === unit.key;
-        const displayValue =
-          unit.key === entryUnitKey
-            ? entryValue
-            : formatForDisplay(convertLandUnit(safeValue, entryUnitKey, unit.key), unit.key);
-
-        return (
-          <label key={unit.key} className="space-y-2">
-            <span className="block text-xs font-semibold text-slate-900">{unit.label}</span>
-            <input
-              type="text"
-              inputMode="decimal"
-              value={displayValue}
-              onFocus={() => {
-                setSelectedUnitKey(unit.key);
-              }}
-              onChange={(event) => {
-                setEntryUnitKey(unit.key);
-                setSelectedUnitKey(unit.key);
-                setEntryValue(sanitizeNumericInput(event.target.value));
-              }}
-              className={[
-                "w-full rounded-xl border bg-slate-50 px-2 py-3 text-xs font-semibold text-slate-900 outline-none transition-colors",
-                isActive
-                  ? "border-emerald-300 bg-emerald-50/40"
-                  : "border-slate-200 focus:border-emerald-300",
-              ].join(" ")}
-            />
-          </label>
-        );
-      })}
+    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      {CONVERSION_UNITS.map((unit) => (
+        <ConversionField
+          key={unit.key}
+          unit={unit}
+          value={unit.key === inputUnit ? inputValue : formattedValues[unit.key]}
+          onChange={(nextValue) => {
+            setInputUnit(unit.key);
+            setInputValue(sanitizeNumericInput(nextValue));
+          }}
+        />
+      ))}
     </div>
   );
 }

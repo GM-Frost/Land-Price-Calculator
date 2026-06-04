@@ -104,12 +104,11 @@ export default function PriceSetValues() {
                 ) : (
                   <p className="min-w-0 truncate text-sm font-semibold text-slate-900">
                     {formatDisplayPrice(item.price)}
-                    <span className="ml-2 font-medium text-emerald-700">per {item.unitLabel}</span>
                   </p>
                 )}
               </div>
 
-              <span className="shrink-0 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <span className="shrink-0 rounded-full border border-slate-200 bg-white text-emerald-700 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ">
                 {item.unitKey}
               </span>
 
