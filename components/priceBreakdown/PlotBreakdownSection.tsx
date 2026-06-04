@@ -38,7 +38,6 @@ export default function PlotBreakdownSection() {
   const {
     savedPriceSets,
     selectedUnitKey,
-    addPriceSetForUnit,
     plotRows,
     addPlotRow,
     removePlotRow,
@@ -50,9 +49,13 @@ export default function PlotBreakdownSection() {
   });
 
   const handleOpenModal = () => {
+    const defaultUnitPrice =
+      savedPriceSets.find((item) => item.unitKey === selectedUnitKey)?.price ?? "";
+
     setForm({
       ...initialFormState,
       plotUnit: selectedUnitKey,
+      unitPrice: defaultUnitPrice,
     });
     setIsModalOpen(true);
   };
@@ -69,19 +72,13 @@ export default function PlotBreakdownSection() {
       return;
     }
 
-    const resolvedUnitPrice = selectedUnitPriceSet?.price ?? form.unitPrice;
-
-    if (!resolvedUnitPrice) {
+    if (!form.unitPrice) {
       toast.error("Set a price for this plot unit");
       return;
     }
 
-    if (!selectedUnitPriceSet) {
-      addPriceSetForUnit(form.plotUnit, resolvedUnitPrice);
-    }
-
     const plotSize = Number(form.plotSize);
-    const unitPrice = Number(resolvedUnitPrice.replace(/,/g, ""));
+    const unitPrice = Number(form.unitPrice.replace(/,/g, ""));
     const totalAmount = plotSize * unitPrice;
 
     const nextRow: Omit<PlotEntry, "id" | "plotNumber"> = {
@@ -90,8 +87,9 @@ export default function PlotBreakdownSection() {
       plotSize,
       plotUnitKey: form.plotUnit,
       plotUnit: LAND_UNITS[form.plotUnit].label,
+      plotUnitPrice: unitPrice,
       plotAmount: totalAmount,
-      priceSetLabel: `रु ${resolvedUnitPrice} / ${LAND_UNITS[form.plotUnit].label}`,
+      priceSetLabel: `रु ${form.unitPrice} / ${LAND_UNITS[form.plotUnit].label}`,
     };
 
     addPlotRow(nextRow);
@@ -206,7 +204,10 @@ export default function PlotBreakdownSection() {
                             setForm((current) => ({
                               ...current,
                               plotUnit: event.target.value as LandUnitKey,
-                              unitPrice: "",
+                              unitPrice:
+                                savedPriceSets.find(
+                                  (item) => item.unitKey === (event.target.value as LandUnitKey)
+                                )?.price ?? "",
                             }))
                           }
                           className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-300"
@@ -221,11 +222,13 @@ export default function PlotBreakdownSection() {
 
                       <label className="space-y-2">
                         <span className="text-sm font-medium text-slate-700">Unit Price</span>
-                        {selectedUnitPriceSet ? (
-                          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
-                            रु {selectedUnitPriceSet.price} per {selectedUnitPriceSet.unitLabel}
-                          </div>
-                        ) : (
+                        <div className="space-y-2">
+                          {selectedUnitPriceSet ? (
+                            <p className="text-xs font-medium text-slate-500">
+                              Default saved price: रु {selectedUnitPriceSet.price} per{" "}
+                              {selectedUnitPriceSet.unitLabel}
+                            </p>
+                          ) : null}
                           <input
                             type="text"
                             inputMode="decimal"
@@ -239,7 +242,7 @@ export default function PlotBreakdownSection() {
                             className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-300"
                             placeholder="Enter unit price"
                           />
-                        )}
+                        </div>
                       </label>
                     </div>
 

@@ -25,13 +25,10 @@ export type PlotEntry = {
   plotSize: number;
   plotUnitKey: LandUnitKey;
   plotUnit: string;
+  plotUnitPrice: number;
   plotAmount: number;
   priceSetLabel?: string;
 };
-
-function parsePriceValue(price: string) {
-  return Number(price.replace(/,/g, ""));
-}
 
 type WorkspaceContextValue = {
   selectedUnitKey: LandUnitKey;
@@ -115,14 +112,12 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
 
         let found = false;
         let updatedUnitKey: LandUnitKey | null = null;
-        let updatedUnitLabel = "";
 
         setSavedPriceSets((current) =>
           current.map((item) => {
             if (item.id !== id) return item;
             found = true;
             updatedUnitKey = item.unitKey;
-            updatedUnitLabel = item.unitLabel;
             return {
               ...item,
               price,
@@ -131,20 +126,6 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
         );
 
         if (found && updatedUnitKey) {
-          const nextPriceValue = parsePriceValue(price);
-
-          setPlotRows((current) =>
-            current.map((row) =>
-              row.plotUnitKey !== updatedUnitKey
-                ? row
-                : {
-                    ...row,
-                    plotAmount: row.plotSize * nextPriceValue,
-                    priceSetLabel: `रु ${price} / ${updatedUnitLabel}`,
-                  }
-            )
-          );
-
           if (updatedUnitKey === selectedUnitKey) {
             setPricePerUnit(price);
           }

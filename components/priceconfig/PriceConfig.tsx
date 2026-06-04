@@ -35,13 +35,13 @@ const PriceConfig = () => {
 
   return (
     <div>
-      <h1 className="text-sm font-semibold uppercase tracking-wider text-slate-700 sm:text-base">
+      <h1 className="text-xs font-semibold uppercase tracking-wide text-slate-700 sm:text-sm">
         Price per unit
       </h1>
 
       <div className="mt-3 flex w-full max-w-xl flex-col gap-3 sm:gap-0">
         <div className="flex min-w-0 items-stretch overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-sm">
-          <div className="flex shrink-0 items-center border-r border-emerald-100 px-4 text-2xl font-bold text-emerald-700 sm:px-5">
+          <div className="flex shrink-0 items-center border-r border-emerald-100 px-4 text-lg font-bold text-emerald-700 sm:px-5">
             रु
           </div>
 
@@ -61,11 +61,10 @@ const PriceConfig = () => {
               text-lg font-semibold text-slate-800
               placeholder:text-slate-400
               focus:outline-none
-              sm:text-2xl
             "
           />
 
-          <div className="hidden shrink-0 items-center border-l border-emerald-100 bg-emerald-50 px-4 text-sm font-bold uppercase tracking-wide text-emerald-700 sm:flex">
+          <div className="hidden shrink-0 items-center border-l border-emerald-100 bg-emerald-50 px-4 text-xs font-bold uppercase tracking-wide text-emerald-700 sm:flex ">
             Per {selectedUnit?.label ?? 'Unit'}
           </div>
         </div>
