@@ -68,7 +68,7 @@ function ConversionField({
 
 export default function UnitConversion() {
   const [inputUnit, setInputUnit] = useState<LandUnitKey>("ROPANI");
-  const [inputValue, setInputValue] = useState("1");
+  const [inputValue, setInputValue] = useState("0");
 
   const safeValue = useMemo(() => {
     const parsed = Number.parseFloat(inputValue);

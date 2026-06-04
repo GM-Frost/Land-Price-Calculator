@@ -29,6 +29,10 @@ export type PlotEntry = {
   priceSetLabel?: string;
 };
 
+function parsePriceValue(price: string) {
+  return Number(price.replace(/,/g, ""));
+}
+
 type WorkspaceContextValue = {
   selectedUnitKey: LandUnitKey;
   selectedUnit: (typeof LAND_UNITS)[LandUnitKey];
@@ -110,17 +114,41 @@ export default function WorkspaceProvider({ children }: WorkspaceProviderProps) 
         if (!price) return "empty";
 
         let found = false;
+        let updatedUnitKey: LandUnitKey | null = null;
+        let updatedUnitLabel = "";
 
         setSavedPriceSets((current) =>
           current.map((item) => {
             if (item.id !== id) return item;
             found = true;
+            updatedUnitKey = item.unitKey;
+            updatedUnitLabel = item.unitLabel;
             return {
               ...item,
               price,
             };
           })
         );
+
+        if (found && updatedUnitKey) {
+          const nextPriceValue = parsePriceValue(price);
+
+          setPlotRows((current) =>
+            current.map((row) =>
+              row.plotUnitKey !== updatedUnitKey
+                ? row
+                : {
+                    ...row,
+                    plotAmount: row.plotSize * nextPriceValue,
+                    priceSetLabel: `रु ${price} / ${updatedUnitLabel}`,
+                  }
+            )
+          );
+
+          if (updatedUnitKey === selectedUnitKey) {
+            setPricePerUnit(price);
+          }
+        }
 
         return found ? "updated" : "missing";
       },
